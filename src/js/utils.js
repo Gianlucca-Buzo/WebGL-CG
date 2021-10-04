@@ -4,6 +4,7 @@ const rotacaoEixoX = (f) => (f * Math.PI) / 180;
 
 const translacaoX = (tx) => (tx);
 const translacaoY = (ty) => (ty);
+const translacaoZ = (tz) => (tz);
 
 const teste = (t) => (t);
 const firstAnimationValue = (fav) => (fav);

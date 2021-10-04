@@ -29,14 +29,23 @@ function main() {
     );
     return m4.yRotate(matrix, yRotation);
   }
+  var config = { rotate: degToRad(20), translacaoX: translacaoX(0), translacaoY: translacaoY(0), translacaoZ: translacaoZ(0)};
+  const gui = loadGUI(config);
+  loadModelsGUI();
+  loadCamerasGUI();
 
-  loadGUI();
+  var objectsToDraw = [
+    {
+      configs: config,
+      gui: gui
+    }
+  ];
   
   function render() {
     
     twgl.resizeCanvasToDisplaySize(gl.canvas);
 
-    gl.viewport(config.translacaoX, config.translacaoY, gl.canvas.width, gl.canvas.height);
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.enable(gl.DEPTH_TEST);
     gl.enable(gl.CULL_FACE);
 
@@ -58,18 +67,20 @@ function main() {
     // ------ Draw the cube --------
 
     // Setup all the needed attributes.
-    gl.bindVertexArray(cubeVAO);
+    objectsToDraw.forEach(function(object) {
+      gl.useProgram(meshProgramInfo.program);
 
-    cubeUniforms.u_matrix = computeMatrix(
-      viewProjectionMatrix,
-      cubeTranslation,
-      config.rotate,
-    );
+      gl.bindVertexArray(cubeVAO);
 
-    // Set the uniforms we just computed
-    twgl.setUniforms(meshProgramInfo, cubeUniforms);
+      cubeUniforms.u_matrix = computeMatrix(
+          viewProjectionMatrix,
+          [object.configs.translacaoX, object.configs.translacaoY, object.configs.translacaoZ],
+          object.configs.rotate
+      );
 
-    twgl.drawBufferInfo(gl, cubeBufferInfo);
+      twgl.setUniforms(meshProgramInfo, cubeUniforms);
+      twgl.drawBufferInfo(gl, cubeBufferInfo);
+    });
 	requestAnimationFrame(render);
   }
      
