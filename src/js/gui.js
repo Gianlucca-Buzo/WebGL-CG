@@ -1,6 +1,7 @@
 // 
 var models = { insertButton: false, insert:false, removeButton:false, remove: false}
 var cameras = { camera1: true, camera2: false, camera3: false}
+var contador = 1;
 
 var cameraConfig = { zoom : zoom(50), rotacaoCameraX: rotacaoCameraX(0), rotacaoCameraY: rotacaoCameraY(0) };
 var animationConfig = {firstAnimationType: "", firstAnimationValue: firstAnimationValue(0),startAnimation: false,secondAnimationType: "", secondAnimationValue: secondAnimationValue(0)}
@@ -15,11 +16,14 @@ options = {rotate: "rotate",translacaoX: "translacaoX", translacaoY: "translacao
 
 const loadGUI = (config) => {
   const gui = new dat.GUI();
-  var polygon = gui.addFolder("Polygon")
+  var polygon
+  polygon = gui.addFolder("Polygon_"+ contador);
+  config.position = contador - 1;
+  contador++;
   polygon.add(config, "rotate", 0, 20, 0.5);
   polygon.add(config, "translacaoX",-80,80,0.5);
   polygon.add(config, "translacaoY",-80,80,0.5);
-  polygon.add(config, "translacaoZ",-80,80,0.5)
+  polygon.add(config, "translacaoZ",-80,80,0.5);
   gui.add(cameraConfig,"zoom",0,120,1);
   var animation = gui.addFolder("Animation");
   animation.add(animationConfig, "firstAnimationType",options);
@@ -47,11 +51,22 @@ const loadCamerasGUI = () => {
 
 
 models.insertButton = function insert(){
-  models.insert = true;
+  var configLocal = { rotate: degToRad(20), translacaoX: translacaoX(0), translacaoY: translacaoY(0), translacaoZ: translacaoZ(0),position: 0};
+      const guiLocal = loadGUI(configLocal);
+      var object = {
+        configs: configLocal,
+        gui: guiLocal
+      };
+      objectsToDraw.push(object);
+      console.log("posicao = "+configLocal.position);
 }
 
 models.removeButton = function remove(){
-  models.remove = true;
+  if (objectsToDraw.length !== 1){
+    object = objectsToDraw.pop();
+    object.gui.destroy();
+    contador--;
+  }
 }
 
 
@@ -76,6 +91,7 @@ async function executeAnimation(config,type,value){
   }
   return;
 }
+
 
 
 function sleep(ms) {

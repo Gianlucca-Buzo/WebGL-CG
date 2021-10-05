@@ -1,3 +1,12 @@
+var config = { rotate: degToRad(20), translacaoX: translacaoX(0), translacaoY: translacaoY(0), translacaoZ: translacaoZ(0),position: 0};
+const gui = loadGUI(config);
+const objectsToDraw = [
+  {
+    configs: config,
+    gui: gui
+  }
+];
+
 function main() {
   const { gl, meshProgramInfo } = initializeWorld();
 
@@ -29,36 +38,21 @@ function main() {
     );
     return m4.yRotate(matrix, yRotation);
   }
-  var config = { rotate: degToRad(20), translacaoX: translacaoX(0), translacaoY: translacaoY(0), translacaoZ: translacaoZ(0)};
-  const gui = loadGUI(config);
+  
   loadModelsGUI();
   loadCamerasGUI();
 
 
-  const objectsToDraw = [
-    {
-      configs: config,
-      gui: gui
-    }
-  ];
+  
   
   function render() {
-    if(models.insert){
-      var configLocal = { rotate: degToRad(20), translacaoX: translacaoX(0), translacaoY: translacaoY(0), translacaoZ: translacaoZ(0)};
-      const guiLocal = loadGUI(configLocal);
-      var object = {
-        configs: configLocal,
-        gui: guiLocal
-      };
-      objectsToDraw.push(object);
-      models.insert = false;
-    }
+    // if(models.insert){
+      
+    //   models.insert = false;
+    // }
 
     if(models.remove){
-      if (objectsToDraw.length !== 1){
-        object = objectsToDraw.pop();
-        object.gui.destroy();
-      }
+      
       models.remove = false;
     }
 
@@ -105,5 +99,6 @@ function main() {
      
   requestAnimationFrame(render);
 }
+
 
 main();
