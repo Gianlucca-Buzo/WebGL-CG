@@ -34,7 +34,8 @@ function main() {
   loadModelsGUI();
   loadCamerasGUI();
 
-  var objectsToDraw = [
+
+  const objectsToDraw = [
     {
       configs: config,
       gui: gui
@@ -42,7 +43,25 @@ function main() {
   ];
   
   function render() {
-    
+    if(models.insert){
+      var configLocal = { rotate: degToRad(20), translacaoX: translacaoX(0), translacaoY: translacaoY(0), translacaoZ: translacaoZ(0)};
+      const guiLocal = loadGUI(configLocal);
+      var object = {
+        configs: configLocal,
+        gui: guiLocal
+      };
+      objectsToDraw.push(object);
+      models.insert = false;
+    }
+
+    if(models.remove){
+      if (objectsToDraw.length !== 1){
+        object = objectsToDraw.pop();
+        object.gui.destroy();
+      }
+      models.remove = false;
+    }
+
     twgl.resizeCanvasToDisplaySize(gl.canvas);
 
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);

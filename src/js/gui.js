@@ -1,5 +1,5 @@
 // 
-var models = { insert: false, remove: false}
+var models = { insertButton: false, insert:false, removeButton:false, remove: false}
 var cameras = { camera1: true, camera2: false, camera3: false}
 
 var cameraConfig = { zoom : zoom(50), rotacaoCameraX: rotacaoCameraX(0), rotacaoCameraY: rotacaoCameraY(0) };
@@ -11,7 +11,7 @@ animationConfig.startAnimation = async function(){
   return;
 }
 
-options = {rotate: "rotate",translacaoX: "translacaoX", teste: "teste"}
+options = {rotate: "rotate",translacaoX: "translacaoX", translacaoY: "translacaoY", translacaoZ: "translacaoZ"}
 
 const loadGUI = (config) => {
   const gui = new dat.GUI();
@@ -20,8 +20,6 @@ const loadGUI = (config) => {
   polygon.add(config, "translacaoX",-80,80,0.5);
   polygon.add(config, "translacaoY",-80,80,0.5);
   polygon.add(config, "translacaoZ",-80,80,0.5)
-  // gui.add(cameraConfig, "rotacaoCameraX",-100,100,1);
-  // gui.add(cameraConfig, "rotacaoCameraY",-100,100,1);
   gui.add(cameraConfig,"zoom",0,120,1);
   var animation = gui.addFolder("Animation");
   animation.add(animationConfig, "firstAnimationType",options);
@@ -35,8 +33,8 @@ const loadGUI = (config) => {
 
 const loadModelsGUI = () => {
   const guiModels = new dat.GUI();
-  guiModels.add(models,"insert");
-  guiModels.add(models,"remove");
+  guiModels.add(models,"insertButton");
+  guiModels.add(models,"removeButton");
 };
 
 const loadCamerasGUI = () => {
@@ -45,6 +43,16 @@ const loadCamerasGUI = () => {
   guiCameras.add(cameras, "camera2");
   guiCameras.add(cameras, "camera3");
 };
+
+
+
+models.insertButton = function insert(){
+  models.insert = true;
+}
+
+models.removeButton = function remove(){
+  models.remove = true;
+}
 
 
 async function executeAnimation(config,type,value){
