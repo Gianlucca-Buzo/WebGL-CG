@@ -2,13 +2,18 @@
 var models = { insertButton: false, insert:false, removeButton:false, remove: false}
 var cameras = { camera1: true, camera2: false, camera3: false}
 var contador = 1;
+var modelsPositions = []
+var controllers = []
 
 var cameraConfig = { zoom : zoom(50), rotacaoCameraX: rotacaoCameraX(0), rotacaoCameraY: rotacaoCameraY(0) };
-var animationConfig = {firstAnimationType: "", firstAnimationValue: firstAnimationValue(0),startAnimation: false,secondAnimationType: "", secondAnimationValue: secondAnimationValue(0)}
+var animationConfig = {firstAnimationType: "", firstAnimationValue: firstAnimationValue(0),startAnimation: false,secondAnimationType: "", secondAnimationValue: secondAnimationValue(0),modelToAnimate:1}
 
 animationConfig.startAnimation = async function(){
-  await executeAnimation(config,animationConfig.firstAnimationType,animationConfig.firstAnimationValue);
-  executeAnimation(config,animationConfig.secondAnimationType,animationConfig.secondAnimationValue);
+  console.log(animationConfig.modelToAnimate)
+  console.log(objectsToDraw[0]);
+  var model = objectsToDraw[animationConfig.modelToAnimate - 1];
+  await executeAnimation(model.configs,animationConfig.firstAnimationType,animationConfig.firstAnimationValue);
+  executeAnimation(model.configs,animationConfig.secondAnimationType,animationConfig.secondAnimationValue);
   return;
 }
 
@@ -19,18 +24,13 @@ const loadGUI = (config) => {
   var polygon
   polygon = gui.addFolder("Polygon_"+ contador);
   config.position = contador - 1;
+  modelsPositions.push(contador);
   contador++;
   polygon.add(config, "rotate", 0, 20, 0.5);
   polygon.add(config, "translacaoX",-80,80,0.5);
   polygon.add(config, "translacaoY",-80,80,0.5);
   polygon.add(config, "translacaoZ",-80,80,0.5);
   gui.add(cameraConfig,"zoom",0,120,1);
-  var animation = gui.addFolder("Animation");
-  animation.add(animationConfig, "firstAnimationType",options);
-  animation.add(animationConfig,"firstAnimationValue",0,1000,1);
-  animation.add(animationConfig,"secondAnimationType",options);
-  animation.add(animationConfig,"secondAnimationValue",0,1000,1);
-  animation.add(animationConfig,"startAnimation");
   return gui;
 };
 
@@ -48,6 +48,16 @@ const loadCamerasGUI = () => {
   guiCameras.add(cameras, "camera3");
 };
 
+var guiAnimation = new dat.GUI();
+var animation = guiAnimation.addFolder("Animation");
+const loadAnimationGUI = () => {
+  animation.add(animationConfig, "firstAnimationType",options);
+  animation.add(animationConfig,"firstAnimationValue",0,1000,1);
+  animation.add(animationConfig,"secondAnimationType",options);
+  animation.add(animationConfig,"secondAnimationValue",0,1000,1);
+  animation.add(animationConfig,"startAnimation");
+  animation.add(animationConfig, "modelToAnimate",modelsPositions); 
+  }
 
 
 models.insertButton = function insert(){
@@ -58,13 +68,16 @@ models.insertButton = function insert(){
         gui: guiLocal
       };
       objectsToDraw.push(object);
-      console.log("posicao = "+configLocal.position);
+      guiAnimation.removeFolder(animation);
+      animation = guiAnimation.addFolder("Animation");
+      loadAnimationGUI();
 }
 
 models.removeButton = function remove(){
   if (objectsToDraw.length !== 1){
     object = objectsToDraw.pop();
     object.gui.destroy();
+    modelsPositions.pop();
     contador--;
   }
 }

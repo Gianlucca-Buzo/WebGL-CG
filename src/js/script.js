@@ -41,21 +41,12 @@ function main() {
   
   loadModelsGUI();
   loadCamerasGUI();
+  loadAnimationGUI();
 
 
   
   
   function render() {
-    // if(models.insert){
-      
-    //   models.insert = false;
-    // }
-
-    if(models.remove){
-      
-      models.remove = false;
-    }
-
     twgl.resizeCanvasToDisplaySize(gl.canvas);
 
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
