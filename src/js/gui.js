@@ -1,16 +1,19 @@
 // 
+var cameraPosition1 = [0, 0, 100];
+var cameraPosition2 = [100, 100, 100];
+var cameraPosition3 = [-100, -100, 100];
+const cameraList = [cameraPosition1,cameraPosition2,cameraPosition3]
+
 var models = { insertButton: false, insert:false, removeButton:false, remove: false}
-var cameras = { camera1: true, camera2: false, camera3: false}
+var camerasConfig = { changeCamera: false, cameraAtual: cameraList[0], zoom : zoom(50), rotacaoCameraX: rotacaoCameraX(0), rotacaoCameraY: rotacaoCameraY(0)}
 var contador = 1;
 var modelsPositions = []
 var controllers = []
 
-var cameraConfig = { zoom : zoom(50), rotacaoCameraX: rotacaoCameraX(0), rotacaoCameraY: rotacaoCameraY(0) };
+// var cameraConfig = { zoom : zoom(50), };
 var animationConfig = {firstAnimationType: "", firstAnimationValue: firstAnimationValue(0),startAnimation: false,secondAnimationType: "", secondAnimationValue: secondAnimationValue(0),modelToAnimate:1}
 
 animationConfig.startAnimation = async function(){
-  console.log(animationConfig.modelToAnimate)
-  console.log(objectsToDraw[0]);
   var model = objectsToDraw[animationConfig.modelToAnimate - 1];
   await executeAnimation(model.configs,animationConfig.firstAnimationType,animationConfig.firstAnimationValue);
   executeAnimation(model.configs,animationConfig.secondAnimationType,animationConfig.secondAnimationValue);
@@ -27,37 +30,37 @@ const loadGUI = (config) => {
   modelsPositions.push(contador);
   contador++;
   polygon.add(config, "rotate", 0, 20, 0.5);
-  polygon.add(config, "translacaoX",-80,80,0.5);
-  polygon.add(config, "translacaoY",-80,80,0.5);
-  polygon.add(config, "translacaoZ",-80,80,0.5);
-  gui.add(cameraConfig,"zoom",0,120,1);
+  polygon.add(config, "translacaoX",-100,100,0.5);
+  polygon.add(config, "translacaoY",-100,100,0.5);
+  polygon.add(config, "translacaoZ",-100,100,0.5);
   return gui;
 };
 
+var guiBase = new dat.GUI();
+var animation
+const loadBaseGUI = () => {
+  
+  var modelsFolder = guiBase.addFolder("Models");
+  modelsFolder.add(models,"insertButton");
+  modelsFolder.add(models,"removeButton");
+  var camera = guiBase.addFolder("Cameras");
+  camera.add(camerasConfig,"zoom",0,120,1);
+  camera.add(camerasConfig, "changeCamera");
+  camera.add(camerasConfig,"rotacaoCameraX",-100,100,0.5);
+  camera.add(camerasConfig,"rotacaoCameraY",-100,100,0.5);
+  updateAnimationGUI();
+}
 
-const loadModelsGUI = () => {
-  const guiModels = new dat.GUI();
-  guiModels.add(models,"insertButton");
-  guiModels.add(models,"removeButton");
-};
-
-const loadCamerasGUI = () => {
-  const guiCameras = new dat.GUI();
-  guiCameras.add(cameras, "camera1");
-  guiCameras.add(cameras, "camera2");
-  guiCameras.add(cameras, "camera3");
-};
-
-var guiAnimation = new dat.GUI();
-var animation = guiAnimation.addFolder("Animation");
-const loadAnimationGUI = () => {
+function updateAnimationGUI(){
+  animation = guiBase.addFolder("Animation");
   animation.add(animationConfig, "firstAnimationType",options);
   animation.add(animationConfig,"firstAnimationValue",0,1000,1);
   animation.add(animationConfig,"secondAnimationType",options);
   animation.add(animationConfig,"secondAnimationValue",0,1000,1);
   animation.add(animationConfig,"startAnimation");
-  animation.add(animationConfig, "modelToAnimate",modelsPositions); 
-  }
+  animation.add(animationConfig, "modelToAnimate",modelsPositions);
+}
+
 
 
 models.insertButton = function insert(){
@@ -68,9 +71,8 @@ models.insertButton = function insert(){
         gui: guiLocal
       };
       objectsToDraw.push(object);
-      guiAnimation.removeFolder(animation);
-      animation = guiAnimation.addFolder("Animation");
-      loadAnimationGUI();
+      guiBase.removeFolder(animation);
+      updateAnimationGUI();
 }
 
 models.removeButton = function remove(){
@@ -79,6 +81,8 @@ models.removeButton = function remove(){
     object.gui.destroy();
     modelsPositions.pop();
     contador--;
+    guiBase.removeFolder(animation);
+    updateAnimationGUI();
   }
 }
 
@@ -103,6 +107,15 @@ async function executeAnimation(config,type,value){
         break;
   }
   return;
+}
+
+camerasConfig.changeCamera = function(){
+  var index = cameraList.indexOf(this.cameraAtual);
+  if (index == cameraList.length -1){
+    camerasConfig.cameraAtual = cameraList[0];
+  }else{
+    camerasConfig.cameraAtual = cameraList[index + 1];
+  }
 }
 
 

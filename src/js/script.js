@@ -7,6 +7,7 @@ const objectsToDraw = [
   }
 ];
 
+
 function main() {
   const { gl, meshProgramInfo } = initializeWorld();
 
@@ -39,9 +40,7 @@ function main() {
     return m4.yRotate(matrix, yRotation);
   }
   
-  loadModelsGUI();
-  loadCamerasGUI();
-  loadAnimationGUI();
+  loadBaseGUI();
 
 
   
@@ -56,15 +55,17 @@ function main() {
     var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, 1, 2000);
     // Compute the camera's matrix using look at.
-    var cameraPosition = [1,1, -cameraConfig.zoom];
-    var target = [cameraConfig.rotacaoCameraX, cameraConfig.rotacaoCameraY, 0];
+    var cameraPosition = [1,1, -camerasConfig.zoom];
+    var target = [camerasConfig.rotacaoCameraX, camerasConfig.rotacaoCameraY, 0];
     var up = [0, 1, 0];
-    var cameraMatrix = m4.lookAt(cameraPosition, target, up);
+    var cameraMatrix = m4.lookAt(camerasConfig.cameraAtual, target, up);
 
     // Make a view matrix from the camera matrix.
     var viewMatrix = m4.inverse(cameraMatrix);
 
     var viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
+
+    
 
     gl.useProgram(meshProgramInfo.program);
 
