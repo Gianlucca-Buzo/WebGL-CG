@@ -23,7 +23,6 @@ function main() {
   );
 
   var fieldOfViewRadians = degToRad(60);
-  var cameraPositionZoom = zoom(60);
 
   const cubeUniforms = {
     u_colorMult: [1, 0.5, 0.5, 1],
@@ -55,9 +54,10 @@ function main() {
     var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
     var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, 1, 2000);
     // Compute the camera's matrix using look at.
-    var cameraPosition = [1,1, -camerasConfig.zoom];
     var target = [camerasConfig.rotacaoCameraX, camerasConfig.rotacaoCameraY, 0];
     var up = [0, 1, 0];
+    var cameraPosition = camerasConfig.cameraAtual;
+    cameraPosition[2] = camerasConfig.zoom;
     var cameraMatrix = m4.lookAt(camerasConfig.cameraAtual, target, up);
 
     // Make a view matrix from the camera matrix.

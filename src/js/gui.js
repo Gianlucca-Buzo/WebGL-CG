@@ -5,7 +5,7 @@ var cameraPosition3 = [-100, -100, 100];
 const cameraList = [cameraPosition1,cameraPosition2,cameraPosition3]
 
 var models = { insertButton: false, insert:false, removeButton:false, remove: false}
-var camerasConfig = { changeCamera: false, cameraAtual: cameraList[0], zoom : zoom(50), rotacaoCameraX: rotacaoCameraX(0), rotacaoCameraY: rotacaoCameraY(0)}
+var camerasConfig = { changeCamera: false, cameraAtual: cameraList[0], zoom: zoom(50), rotacaoCameraX: rotacaoCameraX(0), rotacaoCameraY: rotacaoCameraY(0)}
 var contador = 1;
 var modelsPositions = []
 var controllers = []
@@ -44,7 +44,7 @@ const loadBaseGUI = () => {
   modelsFolder.add(models,"insertButton");
   modelsFolder.add(models,"removeButton");
   var camera = guiBase.addFolder("Cameras");
-  camera.add(camerasConfig,"zoom",0,120,1);
+  camera.add(camerasConfig,"zoom",0,200,1);
   camera.add(camerasConfig, "changeCamera");
   camera.add(camerasConfig,"rotacaoCameraX",-100,100,0.5);
   camera.add(camerasConfig,"rotacaoCameraY",-100,100,0.5);
